@@ -1,163 +1,154 @@
 @extends('layouts.app')
-@section('title', 'Dashboard Saya')
+@section('title', 'Dashboard Customer')
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 py-8">
-    {{-- Header --}}
-    <div class="bg-gradient-to-r from-rose-600 to-pink-600 rounded-2xl p-6 text-white mb-8">
-        <div class="flex items-center justify-between flex-wrap gap-4">
-            <div class="flex items-center gap-4">
-                <div class="w-14 h-14 bg-white bg-opacity-20 rounded-full flex items-center justify-center text-2xl font-bold">
-                    {{ strtoupper(substr(auth()->user()->name, 0, 1)) }}
-                </div>
-                <div>
-                    <p class="text-rose-100 text-sm">Selamat datang kembali,</p>
-                    <h2 class="text-xl font-bold">{{ auth()->user()->name }}</h2>
-                </div>
-            </div>
-            <a href="{{ route('customer.bookings.create') }}"
-               class="bg-white text-rose-600 hover:bg-rose-50 font-semibold px-5 py-2.5 rounded-xl text-sm transition">
-                <i class="fas fa-plus mr-2"></i>Pesan Sekarang
-            </a>
-        </div>
+<div class="max-w-7xl mx-auto px-4 py-10">
 
-        {{-- Mini Stats --}}
-        <div class="grid grid-cols-3 gap-4 mt-6">
-            <div class="bg-white bg-opacity-20 rounded-xl p-4 text-center">
-                <p class="text-2xl font-bold">{{ $stats['total_bookings'] }}</p>
-                <p class="text-rose-100 text-xs mt-1">Total Booking</p>
+    {{-- Greeting --}}
+    <div class="bg-gradient-to-br from-rose-500 to-pink-600 rounded-2xl p-6 text-white mb-8">
+        <div class="flex items-center justify-between">
+            <div>
+                <p class="text-rose-100 text-sm">Selamat datang kembali,</p>
+                <h1 class="font-playfair text-2xl font-bold mt-1">{{ auth()->user()->name }}</h1>
+                <p class="text-rose-100 text-sm mt-1">
+                    <i class="fas fa-calendar-alt mr-1"></i>{{ now()->translatedFormat('l, d F Y') }}
+                </p>
             </div>
-            <div class="bg-white bg-opacity-20 rounded-xl p-4 text-center">
-                <p class="text-2xl font-bold">{{ $stats['active_bookings'] }}</p>
-                <p class="text-rose-100 text-xs mt-1">Aktif</p>
-            </div>
-            <div class="bg-white bg-opacity-20 rounded-xl p-4 text-center">
-                <p class="text-2xl font-bold">{{ $stats['completed'] }}</p>
-                <p class="text-rose-100 text-xs mt-1">Selesai</p>
+            <div class="w-16 h-16 bg-white bg-opacity-20 rounded-full flex items-center justify-center">
+                <i class="fas fa-user text-white text-2xl"></i>
             </div>
         </div>
     </div>
 
+    {{-- Stat Cards --}}
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+        <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+            <div class="w-10 h-10 bg-blue-50 rounded-xl flex items-center justify-center mb-3">
+                <i class="fas fa-calendar-check text-blue-500"></i>
+            </div>
+            <p class="text-2xl font-bold text-gray-800">{{ $stats['total_bookings'] }}</p>
+            <p class="text-xs text-gray-500 mt-1">Total Booking</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+            <div class="w-10 h-10 bg-yellow-50 rounded-xl flex items-center justify-center mb-3">
+                <i class="fas fa-clock text-yellow-500"></i>
+            </div>
+            <p class="text-2xl font-bold text-gray-800">{{ $stats['pending'] }}</p>
+            <p class="text-xs text-gray-500 mt-1">Menunggu Konfirmasi</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+            <div class="w-10 h-10 bg-purple-50 rounded-xl flex items-center justify-center mb-3">
+                <i class="fas fa-spinner text-purple-500"></i>
+            </div>
+            <p class="text-2xl font-bold text-gray-800">{{ $stats['in_progress'] }}</p>
+            <p class="text-xs text-gray-500 mt-1">Sedang Diproses</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm border border-gray-100">
+            <div class="w-10 h-10 bg-green-50 rounded-xl flex items-center justify-center mb-3">
+                <i class="fas fa-check-circle text-green-500"></i>
+            </div>
+            <p class="text-2xl font-bold text-gray-800">{{ $stats['completed'] }}</p>
+            <p class="text-xs text-gray-500 mt-1">Selesai</p>
+        </div>
+    </div>
+
     <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        {{-- Booking Aktif --}}
-        <div class="lg:col-span-2 space-y-4">
-            <h3 class="font-semibold text-gray-700">Booking Aktif</h3>
-            @forelse($activeBookings as $booking)
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                    <div class="p-5">
-                        <div class="flex items-start justify-between mb-4">
-                            <div>
-                                <p class="font-semibold text-gray-800">{{ $booking->groom_name }} & {{ $booking->bride_name }}</p>
-                                <p class="text-xs text-gray-400 mt-0.5">{{ $booking->booking_code }} • {{ $booking->event_date->format('d F Y') }}</p>
-                            </div>
-                            @php
-                                $cfg = ['pending'=>'bg-yellow-100 text-yellow-700','confirmed'=>'bg-blue-100 text-blue-700','in_progress'=>'bg-purple-100 text-purple-700'];
-                                $lbl = ['pending'=>'Menunggu Konfirmasi','confirmed'=>'Dikonfirmasi','in_progress'=>'Sedang Diproses'];
-                            @endphp
-                            <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ $cfg[$booking->status] ?? 'bg-gray-100 text-gray-600' }}">
-                                {{ $lbl[$booking->status] ?? $booking->status }}
-                            </span>
-                        </div>
 
-                        {{-- Progress Bar --}}
-                        @if($booking->progress->count() > 0)
-                        @php $pct = \App\Models\Progress::getPercentage($booking->id); @endphp
-                        <div class="mb-3">
-                            <div class="flex justify-between text-xs text-gray-500 mb-1">
-                                <span>Progress Persiapan</span>
-                                <span class="font-medium text-rose-600">{{ $pct }}%</span>
-                            </div>
-                            <div class="w-full bg-gray-100 rounded-full h-2">
-                                <div class="bg-rose-500 h-2 rounded-full transition-all duration-500" style="width: {{ $pct }}%"></div>
-                            </div>
-                        </div>
-
-                        {{-- Progress Steps Mini --}}
-                        <div class="flex gap-1.5 flex-wrap mb-3">
-                            @foreach($booking->progress->take(7) as $step)
-                                <span title="{{ $step->title }}"
-                                      class="w-6 h-6 rounded-full text-xs flex items-center justify-center
-                                      {{ $step->status === 'done' ? 'bg-green-500 text-white' : ($step->status === 'on_progress' ? 'bg-yellow-400 text-white' : 'bg-gray-200 text-gray-400') }}">
-                                    {{ $loop->iteration }}
-                                </span>
-                            @endforeach
-                        </div>
-                        @endif
-
-                        <div class="flex gap-2">
-                            <a href="{{ route('customer.bookings.show', $booking) }}"
-                               class="flex-1 text-center text-xs bg-rose-50 text-rose-600 hover:bg-rose-100 font-medium py-2 rounded-lg transition">
-                                Detail Booking
-                            </a>
-                            @if(in_array($booking->status, ['confirmed', 'in_progress']) && $booking->remainingPayment() > 0)
-                            <a href="{{ route('customer.payments.create', ['booking_id' => $booking->id]) }}"
-                               class="flex-1 text-center text-xs bg-green-50 text-green-600 hover:bg-green-100 font-medium py-2 rounded-lg transition">
-                                Bayar Sekarang
-                            </a>
-                            @endif
-                        </div>
+        {{-- Booking Terbaru --}}
+        <div class="lg:col-span-2 bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+            <div class="p-5 border-b flex justify-between items-center">
+                <h3 class="font-semibold text-gray-700">Booking Saya</h3>
+                <a href="{{ route('customer.bookings.index') }}" class="text-xs text-rose-600 hover:underline">Lihat Semua</a>
+            </div>
+            <div class="divide-y divide-gray-50">
+                @forelse($recentBookings as $booking)
+                @php
+                    $statusConfig = [
+                        'pending'     => 'bg-yellow-100 text-yellow-700',
+                        'confirmed'   => 'bg-blue-100 text-blue-700',
+                        'in_progress' => 'bg-purple-100 text-purple-700',
+                        'completed'   => 'bg-green-100 text-green-700',
+                        'cancelled'   => 'bg-red-100 text-red-700',
+                    ];
+                    $statusLabel = [
+                        'pending'     => 'Menunggu',
+                        'confirmed'   => 'Dikonfirmasi',
+                        'in_progress' => 'Diproses',
+                        'completed'   => 'Selesai',
+                        'cancelled'   => 'Dibatalkan',
+                    ];
+                @endphp
+                <div class="p-4 flex items-center justify-between hover:bg-gray-50">
+                    <div>
+                        <p class="font-medium text-sm text-gray-800">{{ $booking->groom_name }} & {{ $booking->bride_name }}</p>
+                        <p class="text-xs text-gray-400 mt-0.5">
+                            <span class="font-mono">{{ $booking->booking_code }}</span>
+                            • {{ $booking->event_date->format('d M Y') }}
+                        </p>
+                        <p class="text-xs font-semibold text-rose-600 mt-0.5">Rp {{ number_format($booking->total_price, 0, ',', '.') }}</p>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-xs px-2.5 py-1 rounded-full font-medium {{ $statusConfig[$booking->status] ?? 'bg-gray-100 text-gray-600' }}">
+                            {{ $statusLabel[$booking->status] ?? $booking->status }}
+                        </span>
+                        <a href="{{ route('customer.bookings.show', $booking) }}"
+                           class="text-blue-500 hover:text-blue-700 p-1.5 hover:bg-blue-50 rounded-lg transition">
+                            <i class="fas fa-eye text-xs"></i>
+                        </a>
                     </div>
                 </div>
-            @empty
-                <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-12 text-center">
-                    <i class="fas fa-calendar-times text-4xl text-gray-200 mb-3"></i>
-                    <p class="text-gray-500 font-medium">Belum ada booking aktif</p>
+                @empty
+                <div class="p-10 text-center text-gray-400">
+                    <i class="fas fa-calendar-times text-4xl mb-3 block"></i>
+                    <p class="text-sm">Belum ada booking</p>
                     <a href="{{ route('customer.bookings.create') }}"
-                       class="inline-block mt-4 bg-rose-600 text-white px-6 py-2.5 rounded-xl text-sm font-medium hover:bg-rose-700 transition">
-                        Buat Booking Pertama
+                       class="mt-3 inline-block bg-rose-600 text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-rose-700 transition">
+                        Buat Booking Sekarang
                     </a>
                 </div>
-            @endforelse
+                @endforelse
+            </div>
         </div>
 
         {{-- Sidebar --}}
         <div class="space-y-6">
+
             {{-- Notifikasi --}}
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
-                <div class="p-4 border-b">
-                    <h3 class="font-semibold text-gray-700 text-sm">Notifikasi Terbaru</h3>
+                <div class="p-5 border-b">
+                    <h3 class="font-semibold text-gray-700">Notifikasi</h3>
                 </div>
-                <div class="divide-y max-h-64 overflow-y-auto">
-                    @forelse($notifications as $notif)
-                        <a href="{{ $notif->data['url'] ?? '#' }}"
-                           class="block p-3 hover:bg-gray-50 {{ $notif->read_at ? 'opacity-60' : '' }}">
-                            @php $type = $notif->data['type'] ?? ''; @endphp
-                            <div class="flex gap-3">
-                                <div class="w-8 h-8 rounded-full flex-shrink-0 flex items-center justify-center
-                                    {{ $type === 'payment_verified' ? 'bg-green-100' : ($type === 'payment_rejected' ? 'bg-red-100' : 'bg-blue-100') }}">
-                                    <i class="fas {{ $type === 'payment_verified' ? 'fa-check text-green-500' : ($type === 'payment_rejected' ? 'fa-times text-red-500' : 'fa-info text-blue-500') }} text-xs"></i>
-                                </div>
-                                <div>
-                                    <p class="text-xs text-gray-700">{{ $notif->data['message'] }}</p>
-                                    <p class="text-xs text-gray-400 mt-0.5">{{ $notif->created_at->diffForHumans() }}</p>
-                                </div>
-                            </div>
-                        </a>
+                <div class="divide-y divide-gray-50 max-h-48 overflow-y-auto">
+                    @forelse(auth()->user()->notifications->take(5) as $notif)
+                    <div class="p-3 {{ $notif->read_at ? 'opacity-60' : '' }}">
+                        <p class="text-xs text-gray-700">{{ $notif->data['message'] ?? '-' }}</p>
+                        <p class="text-xs text-gray-400 mt-1">{{ $notif->created_at->diffForHumans() }}</p>
+                    </div>
                     @empty
-                        <p class="p-4 text-center text-xs text-gray-400">Tidak ada notifikasi</p>
+                    <p class="p-5 text-center text-xs text-gray-400">Tidak ada notifikasi</p>
                     @endforelse
                 </div>
             </div>
 
-            {{-- Quick Links --}}
-            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-4">
-                <h3 class="font-semibold text-gray-700 text-sm mb-3">Menu Cepat</h3>
+            {{-- Quick Actions --}}
+            <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
+                <h3 class="font-semibold text-gray-700 mb-4">Menu Cepat</h3>
                 <div class="space-y-2">
                     <a href="{{ route('customer.bookings.create') }}"
-                       class="flex items-center p-3 rounded-xl hover:bg-rose-50 text-gray-600 hover:text-rose-600 transition text-sm">
-                        <i class="fas fa-plus-circle w-5 mr-3 text-rose-400"></i> Buat Booking Baru
+                       class="w-full flex items-center gap-3 p-3 bg-rose-50 text-rose-700 rounded-xl hover:bg-rose-100 transition text-sm font-medium">
+                        <i class="fas fa-plus-circle w-5 text-center"></i> Buat Booking Baru
                     </a>
                     <a href="{{ route('customer.bookings.index') }}"
-                       class="flex items-center p-3 rounded-xl hover:bg-rose-50 text-gray-600 hover:text-rose-600 transition text-sm">
-                        <i class="fas fa-list w-5 mr-3 text-rose-400"></i> Riwayat Booking
+                       class="w-full flex items-center gap-3 p-3 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 transition text-sm font-medium">
+                        <i class="fas fa-list w-5 text-center"></i> Daftar Booking
                     </a>
                     <a href="{{ route('customer.payments.index') }}"
-                       class="flex items-center p-3 rounded-xl hover:bg-rose-50 text-gray-600 hover:text-rose-600 transition text-sm">
-                        <i class="fas fa-credit-card w-5 mr-3 text-rose-400"></i> Riwayat Pembayaran
+                       class="w-full flex items-center gap-3 p-3 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 transition text-sm font-medium">
+                        <i class="fas fa-credit-card w-5 text-center"></i> Riwayat Pembayaran
                     </a>
-                    <a href="{{ route('customer.profile') }}"
-                       class="flex items-center p-3 rounded-xl hover:bg-rose-50 text-gray-600 hover:text-rose-600 transition text-sm">
-                        <i class="fas fa-user-edit w-5 mr-3 text-rose-400"></i> Edit Profil
+                    <a href="{{ route('packages') }}"
+                       class="w-full flex items-center gap-3 p-3 bg-gray-50 text-gray-700 rounded-xl hover:bg-gray-100 transition text-sm font-medium">
+                        <i class="fas fa-box-open w-5 text-center"></i> Lihat Paket
                     </a>
                 </div>
             </div>

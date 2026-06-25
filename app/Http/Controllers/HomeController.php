@@ -21,7 +21,13 @@ class HomeController extends Controller
 
     public function portfolio()
     {
-        $portfolios = Portfolio::latest()->paginate(12);
+        $query = Portfolio::latest();
+
+        if (request('category')) {
+            $query->where('category', request('category'));
+        }
+
+        $portfolios = $query->paginate(12);
         $categories = Portfolio::select('category')->distinct()->pluck('category');
         return view('home.portfolio', compact('portfolios', 'categories'));
     }

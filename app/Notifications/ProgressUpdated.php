@@ -3,21 +3,28 @@ namespace App\Notifications;
 
 use App\Models\Progress;
 use Illuminate\Notifications\Notification;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class ProgressUpdated extends Notification
 {
     public function __construct(public Progress $progress) {}
 
-    public function via($notifiable): array { return ['database']; }
+    public function via($notifiable): array
+    {
+        return ['database'];
+    }
 
     public function toDatabase($notifiable): array
     {
-        $booking = $this->progress->booking;
+        $statusLabel = [
+            'pending'     => 'Belum Dimulai',
+            'on_progress' => 'Sedang Berlangsung',
+            'done'        => 'Selesai',
+        ];
+
         return [
-            'type'    => 'progress_updated',
-            'message' => "Progress '{$this->progress->title}' untuk booking {$booking->booking_code} diperbarui menjadi {$this->progress->status}.",
-            'url'     => route('customer.bookings.show', $booking),
+            'message' => 'Progress "' . $this->progress->title . '" pada booking ' . $this->progress->booking->booking_code . ' diupdate menjadi: ' . ($statusLabel[$this->progress->status] ?? $this->progress->status),
+            'url'     => route('customer.bookings.show', $this->progress->booking),
+            'type'    => 'progress',
         ];
     }
 }

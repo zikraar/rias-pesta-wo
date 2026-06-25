@@ -1,65 +1,44 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Portfolio;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class PortfolioController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $portfolios = Portfolio::latest()->paginate(12);
+        return view('admin.portfolios.index', compact('portfolios'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title'    => 'required|string|max:255',
+            'category' => 'required|string',
+            'image'    => 'required|image|max:3072',
+        ]);
+
+        $data = $request->except('image');
+        $data['is_featured'] = $request->boolean('is_featured');
+        $data['image'] = $request->file('image')->store('portfolios', 'public');
+
+        Portfolio::create($data);
+        return back()->with('success', 'Foto portfolio berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy(Portfolio $portfolio)
     {
-        //
+        Storage::disk('public')->delete($portfolio->image);
+        $portfolio->delete();
+        return back()->with('success', 'Foto portfolio berhasil dihapus.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    public function create() { return redirect()->route('admin.portfolios.index'); }
+    public function show($id) { return redirect()->route('admin.portfolios.index'); }
+    public function edit($id) { return redirect()->route('admin.portfolios.index'); }
+    public function update(Request $request, Portfolio $portfolio) { return redirect()->route('admin.portfolios.index'); }
 }

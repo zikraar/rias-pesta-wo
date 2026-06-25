@@ -81,12 +81,11 @@
                 </div>
                 <div class="p-6">
                     <ul class="space-y-2 mb-6">
-                        @foreach($pkg->includes as $item)
-                            <li class="flex items-start text-sm text-gray-600">
-                                <i class="fas fa-check-circle text-green-500 mr-2 mt-0.5 flex-shrink-0"></i>
-                                {{ $item }}
-                            </li>
-                        @endforeach
+                        @if($pkg->description)
+                            <p class="text-sm text-gray-600 mb-6 line-clamp-3">
+                                {{ Str::limit(str_replace("\n", ' ', $pkg->description), 120) }}
+                            </p>
+                    @endif
                     </ul>
                     <a href="{{ route('register') }}"
                        class="block text-center {{ $index === 1 ? 'bg-rose-600 hover:bg-rose-700 text-white' : 'border-2 border-rose-600 text-rose-600 hover:bg-rose-600 hover:text-white' }} font-semibold py-3 rounded-xl transition">

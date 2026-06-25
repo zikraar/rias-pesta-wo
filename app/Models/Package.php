@@ -6,18 +6,14 @@ use Illuminate\Database\Eloquent\Model;
 class Package extends Model
 {
     protected $fillable = [
-        'name', 'category', 'description', 'price',
-        'max_guests', 'includes', 'thumbnail', 'is_active'
+        'name', 'category', 'price',
+        'description', 'image', 'is_active',
+        'includes', 'thumbnail', 'max_guests',
     ];
 
     protected $casts = [
-        'includes' => 'array',
         'is_active' => 'boolean',
-        'price' => 'decimal:2',
+        'price'     => 'decimal:2',
+        'includes'  => 'array',
     ];
-
-    public function bookingPackages()
-    {
-        return $this->hasMany(BookingPackage::class);
-    }
 }

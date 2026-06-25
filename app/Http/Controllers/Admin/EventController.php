@@ -1,65 +1,41 @@
 <?php
-
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Models\Event;
 use Illuminate\Http\Request;
 
 class EventController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     */
     public function index()
     {
-        //
+        $events = Event::orderBy('event_date')->get();
+        return view('admin.events.index', compact('events'));
     }
 
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     */
     public function store(Request $request)
     {
-        //
+        $request->validate([
+            'title'      => 'required|string|max:255',
+            'event_date' => 'required|date',
+            'location'   => 'nullable|string|max:255',
+            'type'       => 'required|string',
+            'color'      => 'nullable|string|max:7',
+        ]);
+
+        Event::create($request->all());
+        return back()->with('success', 'Event berhasil ditambahkan.');
     }
 
-    /**
-     * Display the specified resource.
-     */
-    public function show(string $id)
+    public function destroy(Event $event)
     {
-        //
+        $event->delete();
+        return back()->with('success', 'Event berhasil dihapus.');
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(string $id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     */
-    public function update(Request $request, string $id)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     */
-    public function destroy(string $id)
-    {
-        //
-    }
+    // Stub methods agar resource route tidak error
+    public function create()  { return redirect()->route('admin.events.index'); }
+    public function show($id) { return redirect()->route('admin.events.index'); }
+    public function edit($id) { return redirect()->route('admin.events.index'); }
+    public function update(Request $request, Event $event) { return redirect()->route('admin.events.index'); }
 }
