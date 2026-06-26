@@ -25,14 +25,14 @@ class BookingController extends Controller
     public function store(Request $request)
     {
         $request->validate([
+            'phone'           => 'required|string|max:20',
             'event_date'      => 'required|date|after:today',
             'event_location'  => 'required|string|max:255',
             'guest_count'     => 'required|integer|min:1',
             'event_type'      => 'required|in:akad,resepsi,akad_resepsi',
             'groom_name'      => 'required|string|max:255',
             'bride_name'      => 'required|string|max:255',
-            'package_ids'     => 'required|array|min:1',
-            'package_ids.*'   => 'exists:packages,id',
+            'package_id'      => 'required|exists:packages,id',
             'special_requests'=> 'nullable|string|max:1000',
         ]);
 
@@ -47,9 +47,12 @@ class BookingController extends Controller
                 ->withErrors(['event_date' => 'Tanggal tersebut sudah dipesan. Silakan pilih tanggal lain.']);
         }
 
-        // Hitung total harga
-        $packages   = Package::whereIn('id', $request->package_ids)->get();
-        $totalPrice = $packages->sum('price');
+        // Sinkronkan nomor HP ke profil
+        if ($request->phone !== auth()->user()->phone) {
+            auth()->user()->update(['phone' => $request->phone]);
+        }
+
+        $package = Package::findOrFail($request->package_id);
 
         $booking = Booking::create([
             'user_id'          => auth()->id(),
@@ -60,18 +63,18 @@ class BookingController extends Controller
             'groom_name'       => $request->groom_name,
             'bride_name'       => $request->bride_name,
             'special_requests' => $request->special_requests,
-            'total_price'      => $totalPrice,
+            'total_price'      => 0,
             'status'           => 'pending',
         ]);
 
-        // Simpan paket yang dipilih
-        foreach ($packages as $pkg) {
-            BookingPackage::create([
-                'booking_id'     => $booking->id,
-                'package_id'     => $pkg->id,
-                'price_snapshot' => $pkg->price,
-            ]);
-        }
+        // Simpan paket yang dipilih (price_snapshot adalah sumber kebenaran total_price)
+        BookingPackage::create([
+            'booking_id'     => $booking->id,
+            'package_id'     => $package->id,
+            'price_snapshot' => $package->price,
+        ]);
+
+        $booking->update(['total_price' => $booking->packages()->sum('price_snapshot')]);
 
         return redirect()
             ->route('customer.bookings.show', $booking)

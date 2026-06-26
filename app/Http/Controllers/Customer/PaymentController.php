@@ -20,7 +20,7 @@ class PaymentController extends Controller
     {
         $booking = Booking::where('user_id', auth()->id())
             ->where('id', $request->booking_id)
-            ->whereIn('status', ['confirmed', 'in_progress'])
+            ->whereNotIn('status', ['completed', 'cancelled'])
             ->firstOrFail();
 
         // Info rekening tujuan pembayaran
@@ -37,18 +37,20 @@ class PaymentController extends Controller
     {
         $request->validate([
             'booking_id'    => 'required|exists:bookings,id',
-            'payment_type'  => 'required|in:dp,cicilan,pelunasan',
+            'payment_type'  => 'required|in:dp,pelunasan,full',
             'amount'        => 'required|numeric|min:1000',
-            'bank_name'     => 'nullable|string',
-            'account_number'=> 'nullable|string',
+            'bank_name'     => 'required|string',
+            'account_number'=> 'required|string',
             'sender_name'   => 'nullable|string',
-            'proof_image'   => 'required|image|mimes:jpg,jpeg,png|max:3072',
+            'proof_image'   => 'required|image|mimes:jpg,jpeg,png|max:2048',
             'transfer_date' => 'required|date|before_or_equal:today',
             'notes'         => 'nullable|string',
         ]);
 
         $booking = Booking::where('user_id', auth()->id())
-            ->findOrFail($request->booking_id);
+            ->where('id', $request->booking_id)
+            ->whereNotIn('status', ['completed', 'cancelled'])
+            ->firstOrFail();
 
         // Generate payment code
         $paymentCode = 'PAY-' . strtoupper(uniqid());

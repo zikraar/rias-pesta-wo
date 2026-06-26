@@ -7,7 +7,7 @@ class Package extends Model
 {
     protected $fillable = [
         'name', 'category', 'price',
-        'description', 'image', 'is_active',
+        'description', 'is_active',
         'includes', 'thumbnail', 'max_guests',
     ];
 

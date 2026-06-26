@@ -19,7 +19,7 @@ class PortfolioController extends Controller
         $request->validate([
             'title'    => 'required|string|max:255',
             'category' => 'required|string',
-            'image'    => 'required|image|max:3072',
+            'image'    => 'required|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
         $data = $request->except('image');

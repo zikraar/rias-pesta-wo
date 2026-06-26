@@ -117,16 +117,18 @@
                         <span class="text-xs px-2 py-1 rounded-full {{ $progColor }}">
                             {{ ucfirst(str_replace('_',' ',$prog->status)) }}
                         </span>
+                        @if(!in_array($booking->status, ['completed', 'cancelled']))
                         {{-- Update Progress Form --}}
                         <form method="POST" action="{{ route('admin.progress.update', $prog) }}" class="inline">
                             @csrf @method('PUT')
-                            <select name="status" onchange="this.form.submit()"
+                            <select name="status" data-current="{{ $prog->status }}" onchange="confirmProgressRevert(this)"
                                     class="text-xs border border-gray-200 rounded-lg px-2 py-1 focus:outline-none">
                                 <option value="pending"     {{ $prog->status=='pending'     ? 'selected' : '' }}>Pending</option>
                                 <option value="on_progress" {{ $prog->status=='on_progress' ? 'selected' : '' }}>On Progress</option>
                                 <option value="done"        {{ $prog->status=='done'        ? 'selected' : '' }}>Done</option>
                             </select>
                         </form>
+                        @endif
                     </div>
                 </div>
                 @endforeach
@@ -172,32 +174,44 @@
         {{-- Update Status --}}
         <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
             <h3 class="font-semibold text-gray-700 mb-4">Update Status Booking</h3>
+            @php
+                $nextStep = [
+                    'pending'     => ['value' => 'confirmed',   'label' => 'Konfirmasi Booking'],
+                    'confirmed'   => ['value' => 'in_progress', 'label' => 'Mulai Proses'],
+                    'in_progress' => ['value' => 'completed',   'label' => 'Tandai Selesai'],
+                ][$booking->status] ?? null;
+                $canCancel = in_array($booking->status, ['pending', 'confirmed', 'in_progress']);
+            @endphp
+            @if($nextStep || $canCancel)
             <form method="POST" action="{{ route('admin.bookings.update', $booking) }}">
                 @csrf @method('PUT')
                 <div class="space-y-3">
-                    <div>
-                        <label class="text-xs text-gray-500 font-medium">Status</label>
-                        <select name="status"
-                                class="w-full mt-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300">
-                            <option value="pending"     {{ $booking->status=='pending'     ? 'selected' : '' }}>Pending</option>
-                            <option value="confirmed"   {{ $booking->status=='confirmed'   ? 'selected' : '' }}>Dikonfirmasi</option>
-                            <option value="in_progress" {{ $booking->status=='in_progress' ? 'selected' : '' }}>Diproses</option>
-                            <option value="completed"   {{ $booking->status=='completed'   ? 'selected' : '' }}>Selesai</option>
-                            <option value="cancelled"   {{ $booking->status=='cancelled'   ? 'selected' : '' }}>Dibatalkan</option>
-                        </select>
-                    </div>
                     <div>
                         <label class="text-xs text-gray-500 font-medium">Catatan Admin</label>
                         <textarea name="admin_notes" rows="3"
                                   class="w-full mt-1 border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
                                   placeholder="Catatan untuk customer...">{{ $booking->admin_notes }}</textarea>
                     </div>
-                    <button type="submit"
+                    @if($nextStep)
+                    <button type="submit" name="status" value="{{ $nextStep['value'] }}"
                             class="w-full bg-rose-600 text-white py-2.5 rounded-lg text-sm font-semibold hover:bg-rose-700 transition">
-                        <i class="fas fa-save mr-2"></i>Simpan Perubahan
+                        <i class="fas fa-arrow-right mr-2"></i>{{ $nextStep['label'] }}
                     </button>
+                    @endif
+                    @if($canCancel)
+                    <button type="submit" name="status" value="cancelled"
+                            onclick="return confirm('Batalkan booking ini? Aksi ini tidak bisa dibatalkan kembali.')"
+                            class="w-full border border-red-200 text-red-600 py-2.5 rounded-lg text-sm font-semibold hover:bg-red-50 transition">
+                        <i class="fas fa-times mr-2"></i>Batalkan Booking
+                    </button>
+                    @endif
                 </div>
             </form>
+            @else
+            <p class="text-sm text-gray-400 text-center py-4">
+                <i class="fas fa-flag-checkered mr-1"></i>Booking sudah final, tidak ada aksi lebih lanjut.
+            </p>
+            @endif
         </div>
 
         {{-- Invoice --}}
@@ -214,7 +228,7 @@
             <h3 class="font-semibold text-gray-700 mb-4">Info Customer</h3>
             <div class="space-y-3 text-sm">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 bg-rose-100 rounded-full flex items-center justify-center">
+                    <div class="w-8 h-8 bg-rose-100 rounded-full flex items-center justify-center flex-shrink-0">
                         <i class="fas fa-user text-rose-500 text-xs"></i>
                     </div>
                     <div>
@@ -223,7 +237,12 @@
                     </div>
                 </div>
                 @if($booking->user->phone)
-                <p class="text-gray-600"><i class="fas fa-phone mr-2 text-gray-400"></i>{{ $booking->user->phone }}</p>
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 bg-gray-100 rounded-full flex items-center justify-center flex-shrink-0">
+                        <i class="fas fa-phone text-gray-400 text-xs"></i>
+                    </div>
+                    <p class="text-gray-600">{{ $booking->user->phone }}</p>
+                </div>
                 @endif
             </div>
         </div>
@@ -254,3 +273,18 @@
     </div>
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function confirmProgressRevert(select) {
+    const current = select.dataset.current;
+    if (current === 'done' && select.value !== 'done') {
+        if (!confirm('Status ini akan diubah dari "Selesai" ke status sebelumnya. Customer akan menerima notifikasi perubahan ini. Lanjutkan?')) {
+            select.value = current;
+            return;
+        }
+    }
+    select.form.submit();
+}
+</script>
+@endpush

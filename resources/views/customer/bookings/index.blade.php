@@ -75,7 +75,7 @@
                    class="flex-1 text-center bg-rose-50 text-rose-600 py-2 rounded-lg text-sm font-semibold hover:bg-rose-100 transition">
                     <i class="fas fa-eye mr-1"></i>Detail
                 </a>
-                @if(in_array($booking->status, ['confirmed','in_progress']))
+                @if(!in_array($booking->status, ['completed','cancelled']))
                 <a href="{{ route('customer.payments.create', ['booking_id' => $booking->id]) }}"
                    class="flex-1 text-center bg-gray-800 text-white py-2 rounded-lg text-sm font-semibold hover:bg-gray-700 transition">
                     <i class="fas fa-credit-card mr-1"></i>Bayar

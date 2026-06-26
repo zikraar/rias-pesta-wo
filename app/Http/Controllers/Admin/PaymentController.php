@@ -27,15 +27,26 @@ class PaymentController extends Controller
 
     public function verify(Payment $payment)
     {
+        if ($payment->booking->status === 'cancelled') {
+            return back()->with('error', 'Booking ini sudah dibatalkan, pembayaran tidak bisa diverifikasi.');
+        }
+
         $payment->update([
             'status'      => 'verified',
             'verified_by' => auth()->id(),
             'verified_at' => now(),
         ]);
 
-        // Update status booking jika lunas
+        // Verifikasi pertama pada booking pending = bukti booking serius -> auto-confirm
         $booking = $payment->booking;
-        if ($booking->remainingPayment() <= 0) {
+        if ($booking->status === 'pending') {
+            $booking->update(['status' => 'confirmed']);
+            $booking->createDefaultProgress();
+            $booking->createWeddingEvent();
+        }
+
+        // Lunas saat sudah confirmed -> lanjut diproses (completed tetap manual oleh admin)
+        if ($booking->status === 'confirmed' && $booking->remainingPayment() <= 0) {
             $booking->update(['status' => 'in_progress']);
         }
 

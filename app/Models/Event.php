@@ -6,8 +6,8 @@ use Illuminate\Database\Eloquent\Model;
 class Event extends Model
 {
     protected $fillable = [
-        'booking_id', 'title', 'event_date',
-        'location', 'type', 'color',
+        'booking_id', 'title', 'description', 'event_date',
+        'start_time', 'end_time', 'location', 'type', 'color',
     ];
 
     protected $casts = [

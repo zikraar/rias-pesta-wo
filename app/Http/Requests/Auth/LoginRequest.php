@@ -50,6 +50,15 @@ class LoginRequest extends FormRequest
             ]);
         }
 
+        if (! Auth::user()->is_active) {
+            Auth::logout();
+            RateLimiter::hit($this->throttleKey());
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda nonaktif. Silakan hubungi admin Rias Pesta Pekanbaru.',
+            ]);
+        }
+
         RateLimiter::clear($this->throttleKey());
     }
 

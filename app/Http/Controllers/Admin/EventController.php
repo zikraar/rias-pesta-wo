@@ -15,7 +15,7 @@ class EventController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'title'      => 'required|string|max:255',
             'event_date' => 'required|date',
             'location'   => 'nullable|string|max:255',
@@ -23,7 +23,7 @@ class EventController extends Controller
             'color'      => 'nullable|string|max:7',
         ]);
 
-        Event::create($request->all());
+        Event::create($validated);
         return back()->with('success', 'Event berhasil ditambahkan.');
     }
 

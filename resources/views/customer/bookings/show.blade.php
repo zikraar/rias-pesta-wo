@@ -106,7 +106,7 @@
             <div class="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
                 <div class="flex justify-between items-center mb-4">
                     <h3 class="font-semibold text-gray-700">Riwayat Pembayaran</h3>
-                    @if(in_array($booking->status, ['confirmed','in_progress']))
+                    @if(!in_array($booking->status, ['completed','cancelled']))
                     <a href="{{ route('customer.payments.create', ['booking_id'=>$booking->id]) }}"
                        class="text-xs bg-rose-600 text-white px-3 py-1.5 rounded-lg hover:bg-rose-700 transition">
                         <i class="fas fa-plus mr-1"></i>Upload Bukti
@@ -167,7 +167,7 @@
             </div>
 
             {{-- Tombol Bayar --}}
-            @if(in_array($booking->status, ['confirmed','in_progress']) && $booking->remainingPayment() > 0)
+            @if(!in_array($booking->status, ['completed','cancelled']) && $booking->remainingPayment() > 0)
             <a href="{{ route('customer.payments.create', ['booking_id'=>$booking->id]) }}"
                class="w-full flex items-center justify-center gap-2 bg-rose-600 text-white py-3 rounded-xl font-bold hover:bg-rose-700 transition">
                 <i class="fas fa-credit-card"></i>Upload Bukti Bayar

@@ -5,6 +5,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class Booking extends Model
 {
+    // Status hanya boleh maju satu langkah; 'cancelled' bisa dari status mana pun selain completed/cancelled
+    const TRANSITIONS = [
+        'pending'     => ['confirmed', 'cancelled'],
+        'confirmed'   => ['in_progress', 'cancelled'],
+        'in_progress' => ['completed', 'cancelled'],
+        'completed'   => [],
+        'cancelled'   => [],
+    ];
+
     protected $fillable = [
         'booking_code', 'user_id', 'event_date', 'event_location',
         'guest_count', 'event_type', 'groom_name', 'bride_name',
@@ -42,5 +51,44 @@ class Booking extends Model
     public function remainingPayment()
     {
         return $this->total_price - $this->totalPaid();
+    }
+
+    public function canTransitionTo(string $status): bool
+    {
+        return in_array($status, self::TRANSITIONS[$this->status] ?? []);
+    }
+
+    public function createDefaultProgress(): void
+    {
+        $defaultSteps = [
+            ['title' => 'Konfirmasi Booking',        'order' => 1],
+            ['title' => 'Survey Lokasi',              'order' => 2],
+            ['title' => 'Fitting Busana Pengantin',   'order' => 3],
+            ['title' => 'Persiapan Dekorasi',         'order' => 4],
+            ['title' => 'Gladi Resik',                'order' => 5],
+            ['title' => 'Hari Pernikahan',            'order' => 6],
+            ['title' => 'Dokumentasi Selesai',        'order' => 7],
+        ];
+
+        foreach ($defaultSteps as $step) {
+            Progress::create([
+                'booking_id' => $this->id,
+                'title'      => $step['title'],
+                'status'     => $step['order'] === 1 ? 'done' : 'pending',
+                'order'      => $step['order'],
+            ]);
+        }
+    }
+
+    public function createWeddingEvent(): void
+    {
+        Event::create([
+            'booking_id' => $this->id,
+            'title'      => "Pernikahan {$this->groom_name} & {$this->bride_name}",
+            'event_date' => $this->event_date,
+            'location'   => $this->event_location,
+            'type'       => 'wedding',
+            'color'      => '#e11d48',
+        ]);
     }
 }

@@ -2,7 +2,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
-use App\Models\{Booking, Progress, Event};
+use App\Models\Booking;
 use Illuminate\Http\Request;
 use Barryvdh\DomPDF\Facade\Pdf;
 
@@ -40,53 +40,23 @@ class BookingController extends Controller
             'admin_notes' => 'nullable|string|max:1000',
         ]);
 
+        if (!$booking->canTransitionTo($request->status)) {
+            return back()->with('error', 'Perubahan status tidak valid.');
+        }
+
         $oldStatus = $booking->status;
         $booking->update($request->only('status', 'admin_notes'));
 
         // Auto-buat progress template saat confirmed
         if ($oldStatus === 'pending' && $request->status === 'confirmed') {
-            $this->createDefaultProgress($booking);
-            $this->createWeddingEvent($booking);
+            $booking->createDefaultProgress();
+            $booking->createWeddingEvent();
         }
 
         // Kirim notifikasi ke customer
         $booking->user->notify(new \App\Notifications\BookingStatusUpdated($booking));
 
         return back()->with('success', 'Status booking berhasil diperbarui.');
-    }
-
-    private function createDefaultProgress(Booking $booking): void
-    {
-        $defaultSteps = [
-            ['title' => 'Konfirmasi Booking',        'order' => 1],
-            ['title' => 'Survey Lokasi',              'order' => 2],
-            ['title' => 'Fitting Busana Pengantin',   'order' => 3],
-            ['title' => 'Persiapan Dekorasi',         'order' => 4],
-            ['title' => 'Gladi Resik',                'order' => 5],
-            ['title' => 'Hari Pernikahan',            'order' => 6],
-            ['title' => 'Dokumentasi Selesai',        'order' => 7],
-        ];
-
-        foreach ($defaultSteps as $step) {
-            Progress::create([
-                'booking_id' => $booking->id,
-                'title'      => $step['title'],
-                'status'     => $step['order'] === 1 ? 'done' : 'pending',
-                'order'      => $step['order'],
-            ]);
-        }
-    }
-
-    private function createWeddingEvent(Booking $booking): void
-    {
-        Event::create([
-            'booking_id' => $booking->id,
-            'title'      => "Pernikahan {$booking->groom_name} & {$booking->bride_name}",
-            'event_date' => $booking->event_date,
-            'location'   => $booking->event_location,
-            'type'       => 'wedding',
-            'color'      => '#e11d48',
-        ]);
     }
 
     public function invoice(Booking $booking)

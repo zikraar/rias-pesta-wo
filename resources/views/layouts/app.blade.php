@@ -74,6 +74,10 @@
                                     </div>
                                 </div>
                             </div>
+                            <a href="{{ route('customer.profile') }}"
+                               class="text-gray-600 hover:text-rose-600 p-2" title="Profil Saya">
+                                <i class="fas fa-user-circle text-lg"></i>
+                            </a>
                             <a href="{{ route('customer.dashboard') }}"
                                class="bg-rose-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-rose-700 transition">
                                 <i class="fas fa-user mr-1"></i> Dashboard
@@ -135,16 +139,15 @@
                 <div>
                     <h4 class="text-white font-semibold mb-4">Kontak</h4>
                     <div class="space-y-2 text-sm">
-                        <p><i class="fas fa-map-marker-alt mr-2 text-rose-400"></i>Jl. Delima Gg Delima VII No. 3, Pekanbaru</p>
-                        <p><i class="fas fa-phone mr-2 text-rose-400"></i>+62 812-3456-7890</p>
+                        <p><i class="fas fa-map-marker-alt mr-2 text-rose-400"></i>Jl. Delima Gg Delima VII No. 3, Pekanbaru, Riau 28294</p>
+                        <p><i class="fas fa-phone mr-2 text-rose-400"></i>0812-7603-1567</p>
                         <p><i class="fas fa-envelope mr-2 text-rose-400"></i>info@riaspesta.com</p>
                     </div>
                 </div>
                 <div>
                     <h4 class="text-white font-semibold mb-4">Jam Operasional</h4>
                     <div class="space-y-1 text-sm text-gray-400">
-                        <p>Senin – Sabtu: 08.00 – 20.00 WIB</p>
-                        <p>Minggu: 09.00 – 17.00 WIB</p>
+                        <p>Setiap hari: 07.00 – 21.00 WIB</p>
                     </div>
                 </div>
             </div>

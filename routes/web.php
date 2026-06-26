@@ -29,7 +29,7 @@ require __DIR__.'/auth.php';
 // ===== CUSTOMER ROUTES =====
 Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer.')->group(function () {
     Route::get('/dashboard', [CustomerDashboard::class, 'index'])->name('dashboard');
-    Route::resource('bookings', CustomerBooking::class);
+    Route::resource('bookings', CustomerBooking::class)->only(['index', 'create', 'store', 'show']);
     Route::get('bookings/{booking}/progress', [CustomerProgress::class, 'index'])->name('bookings.progress');
     Route::resource('payments', CustomerPayment::class)->only(['index', 'create', 'store', 'show']);
     Route::get('profile', [CustomerDashboard::class, 'profile'])->name('profile');
@@ -40,7 +40,7 @@ Route::middleware(['auth', 'role:customer'])->prefix('customer')->name('customer
 Route::middleware(['auth', 'role:admin,superadmin'])->prefix('admin')->name('admin.')->group(function () {
     Route::get('/dashboard', [AdminDashboard::class, 'index'])->name('dashboard');
     Route::resource('packages', AdminPackage::class);
-    Route::resource('bookings', AdminBooking::class);
+    Route::resource('bookings', AdminBooking::class)->only(['index', 'show', 'update']);
     Route::resource('payments', AdminPayment::class)->only(['index', 'show', 'update']);
     Route::post('payments/{payment}/verify', [AdminPayment::class, 'verify'])->name('payments.verify');
     Route::post('payments/{payment}/reject', [AdminPayment::class, 'reject'])->name('payments.reject');

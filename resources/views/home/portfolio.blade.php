@@ -98,7 +98,7 @@
                 <i class="fas fa-user-plus mr-2"></i>Daftar & Pesan
             </a>
             @endauth
-            <a href="https://wa.me/628127603567" target="_blank"
+            <a href="https://wa.me/6281276031567" target="_blank"
                class="bg-green-500 text-white px-8 py-3 rounded-xl font-semibold hover:bg-green-600 transition">
                 <i class="fab fa-whatsapp mr-2"></i>Chat WhatsApp
             </a>

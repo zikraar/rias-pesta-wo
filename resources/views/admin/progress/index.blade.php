@@ -90,7 +90,7 @@
                     {{-- Update Status --}}
                     <form method="POST" action="{{ route('admin.progress.update', $prog) }}" class="mt-3 pl-5" enctype="multipart/form-data">
                         @csrf @method('PUT')
-                        <select name="status" onchange="this.form.submit()"
+                        <select name="status" data-current="{{ $prog->status }}" onchange="confirmProgressRevert(this)"
                                 class="w-full text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white focus:outline-none focus:ring-2 focus:ring-rose-300">
                             <option value="pending"     {{ $prog->status=='pending'     ? 'selected' : '' }}>Pending</option>
                             <option value="on_progress" {{ $prog->status=='on_progress' ? 'selected' : '' }}>On Progress</option>
@@ -118,3 +118,18 @@
     @endforelse
 </div>
 @endsection
+
+@push('scripts')
+<script>
+function confirmProgressRevert(select) {
+    const current = select.dataset.current;
+    if (current === 'done' && select.value !== 'done') {
+        if (!confirm('Status ini akan diubah dari "Selesai" ke status sebelumnya. Customer akan menerima notifikasi perubahan ini. Lanjutkan?')) {
+            select.value = current;
+            return;
+        }
+    }
+    select.form.submit();
+}
+</script>
+@endpush

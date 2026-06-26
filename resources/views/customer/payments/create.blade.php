@@ -44,8 +44,8 @@
                     <select name="payment_type" required
                             class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300">
                         <option value="dp">DP (Down Payment)</option>
-                        <option value="cicilan">Cicilan</option>
                         <option value="pelunasan">Pelunasan</option>
+                        <option value="full">Pelunasan Penuh (Full)</option>
                     </select>
                 </div>
                 <div>
@@ -67,16 +67,18 @@
                            class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300">
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Bank Asal</label>
-                    <input type="text" name="bank_name" value="{{ old('bank_name') }}"
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Bank/E-Wallet Asal <span class="text-red-500">*</span></label>
+                    <input type="text" name="bank_name" value="{{ old('bank_name') }}" required
                            class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
-                           placeholder="contoh: BCA">
+                           placeholder="contoh: BCA / GoPay / DANA">
+                    @error('bank_name')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
                 <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-1">No. Rekening Pengirim</label>
-                    <input type="text" name="account_number" value="{{ old('account_number') }}"
+                    <label class="block text-sm font-medium text-gray-700 mb-1">No. Rekening/HP Pengirim <span class="text-red-500">*</span></label>
+                    <input type="text" name="account_number" value="{{ old('account_number') }}" required
                            class="w-full border border-gray-200 rounded-lg px-3 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
-                           placeholder="contoh: 1234567890">
+                           placeholder="contoh: 1234567890 / 081234567890">
+                    @error('account_number')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
                 </div>
             </div>
 

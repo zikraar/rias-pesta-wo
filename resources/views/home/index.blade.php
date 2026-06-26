@@ -8,47 +8,28 @@
         <div class="absolute top-0 right-0 w-96 h-96 rounded-full border-8 border-white transform translate-x-1/3 -translate-y-1/3"></div>
         <div class="absolute bottom-0 left-0 w-72 h-72 rounded-full border-8 border-white transform -translate-x-1/3 translate-y-1/3"></div>
     </div>
-    <div class="relative max-w-7xl mx-auto px-4 py-24 flex flex-col lg:flex-row items-center gap-12">
-        <div class="lg:w-1/2 text-center lg:text-left">
-            <span class="inline-block bg-rose-500 bg-opacity-40 text-rose-100 text-xs font-semibold px-3 py-1 rounded-full mb-4 uppercase tracking-wider">
-                ✨ Wedding Organizer Pekanbaru
-            </span>
-            <h1 class="font-playfair text-5xl lg:text-6xl font-bold leading-tight mb-6">
-                Wujudkan <br><span class="text-yellow-300">Pernikahan</span><br>Impian Anda
-            </h1>
-            <p class="text-rose-100 text-lg mb-8 max-w-xl">
-                Rias Pesta Pekanbaru hadir untuk mewujudkan setiap detail pernikahan Anda dengan sentuhan profesional, penuh cinta, dan tak terlupakan.
-            </p>
-            <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start">
-                <a href="{{ route('register') }}"
-                   class="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold px-8 py-4 rounded-xl transition text-center">
-                    Pesan Sekarang
-                </a>
-                <a href="{{ route('packages') }}"
-                   class="border-2 border-white text-white hover:bg-white hover:text-rose-700 font-semibold px-8 py-4 rounded-xl transition text-center">
-                    Lihat Paket
-                </a>
-            </div>
-        </div>
-        <div class="lg:w-1/2">
-            <div class="bg-white bg-opacity-10 backdrop-blur rounded-2xl p-8 grid grid-cols-2 gap-4">
-                <div class="bg-white bg-opacity-20 rounded-xl p-5 text-center">
-                    <p class="font-playfair text-4xl font-bold text-yellow-300">500+</p>
-                    <p class="text-rose-100 text-sm mt-1">Pasangan Bahagia</p>
-                </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-5 text-center">
-                    <p class="font-playfair text-4xl font-bold text-yellow-300">10+</p>
-                    <p class="text-rose-100 text-sm mt-1">Tahun Pengalaman</p>
-                </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-5 text-center">
-                    <p class="font-playfair text-4xl font-bold text-yellow-300">3</p>
-                    <p class="text-rose-100 text-sm mt-1">Paket Tersedia</p>
-                </div>
-                <div class="bg-white bg-opacity-20 rounded-xl p-5 text-center">
-                    <p class="font-playfair text-4xl font-bold text-yellow-300">100%</p>
-                    <p class="text-rose-100 text-sm mt-1">Kepuasan Klien</p>
-                </div>
-            </div>
+    <div class="relative max-w-4xl mx-auto px-4 py-28 text-center">
+        <span class="inline-block bg-rose-500 bg-opacity-40 text-rose-100 text-xs font-semibold px-3 py-1 rounded-full mb-5 uppercase tracking-wider">
+            ✨ Wedding Organizer Pekanbaru
+        </span>
+        <h1 class="font-playfair text-6xl lg:text-7xl font-bold leading-tight mb-4">
+            Rias Pesta <span class="text-yellow-300">Pekanbaru</span>
+        </h1>
+        <p class="font-playfair text-2xl lg:text-3xl text-rose-100 italic mb-6">
+            Wujudkan Pernikahan Impian Anda
+        </p>
+        <p class="text-rose-100 text-lg mb-10 max-w-2xl mx-auto">
+            Hadir untuk mewujudkan setiap detail pernikahan Anda dengan sentuhan profesional, penuh cinta, dan tak terlupakan.
+        </p>
+        <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a href="{{ route('register') }}"
+               class="bg-yellow-400 hover:bg-yellow-500 text-yellow-900 font-bold px-8 py-4 rounded-xl transition text-center">
+                Pesan Sekarang
+            </a>
+            <a href="{{ route('packages') }}"
+               class="border-2 border-white text-white hover:bg-white hover:text-rose-700 font-semibold px-8 py-4 rounded-xl transition text-center">
+                Lihat Paket
+            </a>
         </div>
     </div>
 </section>
@@ -143,7 +124,7 @@
                class="bg-white text-rose-600 hover:bg-gray-100 font-bold px-8 py-4 rounded-xl transition">
                 Daftar & Pesan Sekarang
             </a>
-            <a href="https://wa.me/6281234567890"
+            <a href="https://wa.me/6281276031567"
                class="border-2 border-white text-white hover:bg-white hover:text-rose-600 font-semibold px-8 py-4 rounded-xl transition" target="_blank">
                 <i class="fab fa-whatsapp mr-2"></i>Hubungi via WhatsApp
             </a>

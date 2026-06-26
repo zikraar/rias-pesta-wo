@@ -42,13 +42,13 @@
 
             <div>
                 <label class="block text-sm font-medium text-gray-700 mb-1">Foto Paket</label>
-                @if($package->image)
-                    <img src="{{ asset('storage/'.$package->image) }}"
+                @if($package->thumbnail)
+                    <img src="{{ asset('storage/'.$package->thumbnail) }}"
                          alt="Foto saat ini"
                          class="h-40 rounded-xl object-cover border border-gray-200 mb-3">
                     <p class="text-xs text-gray-400 mb-2">Upload baru untuk mengganti foto di atas</p>
                 @endif
-                <input type="file" name="image" accept="image/*"
+                <input type="file" name="thumbnail" accept="image/*"
                        class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none"
                        onchange="previewImage(this)">
                 <img id="preview" src="" alt="" class="hidden mt-3 h-40 rounded-xl object-cover border border-gray-200">

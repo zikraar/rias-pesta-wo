@@ -101,8 +101,8 @@
                 {{-- Demo Accounts --}}
                 <div class="mt-4 p-3 bg-gray-50 rounded-xl text-xs text-gray-400 border border-dashed border-gray-200">
                     <p class="font-medium text-gray-500 mb-1">Akun Demo:</p>
-                    <p>Admin: admin@riaspesta.com / password123</p>
-                    <p>Customer: customer@demo.com / password123</p>
+                    <p>Admin: admin@riaspesta.com / password</p>
+                    <p>Customer: customer@demo.com / password</p>
                 </div>
             </div>
         </div>

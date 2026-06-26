@@ -29,7 +29,7 @@
 <div class="header">
     <h1>INVOICE</h1>
     <p>Rias Pesta Pekanbaru — Wedding Organizer</p>
-    <p>Jl. Delima Gg Delima VII No. 3, Pekanbaru | 0812-7603-567</p>
+    <p>Jl. Delima Gg Delima VII No. 3, Pekanbaru, Riau 28294 | 0812-7603-1567</p>
 </div>
 
 <div class="invoice-info">

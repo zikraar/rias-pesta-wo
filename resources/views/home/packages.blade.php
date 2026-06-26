@@ -114,7 +114,7 @@
         <h2 class="font-playfair text-3xl font-bold mb-4">Bingung Memilih Paket?</h2>
         <p class="text-rose-100 mb-8">Konsultasikan kebutuhan pernikahan Anda langsung bersama tim kami.</p>
         <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a href="https://wa.me/628127603567" target="_blank"
+            <a href="https://wa.me/6281276031567" target="_blank"
                class="bg-white text-rose-600 hover:bg-gray-100 font-bold px-8 py-3 rounded-xl transition">
                 <i class="fab fa-whatsapp mr-2"></i>Chat WhatsApp
             </a>

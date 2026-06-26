@@ -19,31 +19,40 @@
                 </label>
                 <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
                     @foreach($packages as $pkg)
-                    <label class="relative cursor-pointer">
-                        <input type="checkbox" name="package_ids[]" value="{{ $pkg->id }}"
-                               {{ request('package') == $pkg->id ? 'checked' : '' }}
-                               class="peer sr-only">
-                        <div class="border-2 border-gray-100 peer-checked:border-rose-500 peer-checked:bg-rose-50 rounded-xl p-4 transition">
-                            <div class="flex justify-between items-start">
-                                <div>
-                                    <p class="font-semibold text-gray-800">{{ $pkg->name }}</p>
-                                    <p class="text-rose-600 font-bold text-sm mt-0.5">Rp {{ number_format($pkg->price, 0, ',', '.') }}</p>
-                                </div>
-                                <div class="w-5 h-5 border-2 border-gray-300 peer-checked:border-rose-500 rounded-full flex-shrink-0 mt-0.5 flex items-center justify-center">
-                                    <i class="fas fa-check text-rose-500 text-xs hidden peer-checked:block"></i>
-                                </div>
-                            </div>
+                    <label class="relative cursor-pointer block">
+                        <input type="radio" name="package_id" value="{{ $pkg->id }}"
+                               {{ (old('package_id', request('package')) == $pkg->id) ? 'checked' : '' }}
+                               class="peer sr-only" required>
+                        <div class="border-2 border-gray-100 peer-checked:border-rose-500 peer-checked:bg-rose-50 rounded-xl p-4 pr-12 transition">
+                            <p class="font-semibold text-gray-800">{{ $pkg->name }}</p>
+                            <p class="text-rose-600 font-bold text-sm mt-0.5">Rp {{ number_format($pkg->price, 0, ',', '.') }}</p>
                         </div>
-                        <div class="absolute top-3 right-3 w-5 h-5 border-2 border-gray-300 rounded-full hidden peer-checked:flex items-center justify-center bg-rose-500 border-rose-500">
-                            <i class="fas fa-check text-white text-xs"></i>
+                        <div class="absolute top-1/2 right-4 -translate-y-1/2 w-5 h-5 rounded-full border-2 border-gray-300 peer-checked:border-rose-500 peer-checked:bg-rose-500 flex items-center justify-center transition">
+                            <i class="fas fa-check text-white text-[10px] hidden peer-checked:block"></i>
                         </div>
                     </label>
                     @endforeach
                 </div>
-                @error('package_ids')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                <p class="text-xs text-gray-400 mt-2">Pilih salah satu paket layanan.</p>
+                @error('package_id')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
             </div>
 
             <div class="border-t border-gray-100 pt-5 grid grid-cols-1 sm:grid-cols-2 gap-5">
+                {{-- Kontak --}}
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Email Akun</label>
+                    <input type="email" value="{{ auth()->user()->email }}" readonly disabled
+                           class="w-full border border-gray-200 bg-gray-50 text-gray-500 rounded-lg px-4 py-2.5 text-sm focus:outline-none">
+                    <p class="text-xs text-gray-400 mt-1">Notifikasi status booking dikirim ke email ini.</p>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-1">Nomor HP/WhatsApp <span class="text-red-500">*</span></label>
+                    <input type="text" name="phone" value="{{ old('phone', auth()->user()->phone) }}" required
+                           class="w-full border border-gray-200 rounded-lg px-4 py-2.5 text-sm focus:outline-none focus:ring-2 focus:ring-rose-300"
+                           placeholder="contoh: 081234567890">
+                    @error('phone')<p class="text-red-500 text-xs mt-1">{{ $message }}</p>@enderror
+                </div>
+
                 {{-- Nama Mempelai --}}
                 <div>
                     <label class="block text-sm font-medium text-gray-700 mb-1">Nama Mempelai Pria <span class="text-red-500">*</span></label>
@@ -137,23 +146,20 @@ const prices = {
 };
 
 function updateTotal() {
-    const checked = document.querySelectorAll('input[name="package_ids[]"]:checked');
-    let total = 0;
-    checked.forEach(cb => { total += prices[cb.value] || 0; });
-
+    const checked = document.querySelector('input[name="package_id"]:checked');
     const preview = document.getElementById('pricePreview');
     const totalEl = document.getElementById('totalPrice');
 
-    if (total > 0) {
+    if (checked && prices[checked.value]) {
         preview.classList.remove('hidden');
-        totalEl.textContent = 'Rp ' + total.toLocaleString('id-ID');
+        totalEl.textContent = 'Rp ' + prices[checked.value].toLocaleString('id-ID');
     } else {
         preview.classList.add('hidden');
     }
 }
 
-document.querySelectorAll('input[name="package_ids[]"]').forEach(cb => {
-    cb.addEventListener('change', updateTotal);
+document.querySelectorAll('input[name="package_id"]').forEach(radio => {
+    radio.addEventListener('change', updateTotal);
 });
 updateTotal();
 </script>

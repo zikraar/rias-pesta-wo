@@ -26,14 +26,14 @@ class PackageController extends Controller
             'category'    => 'required|string',
             'price'       => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'image'       => 'nullable|image|max:2048',
+            'thumbnail'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->except('image');
+        $data = $request->except('thumbnail');
         $data['is_active'] = $request->boolean('is_active');
 
-        if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('packages', 'public');
+        if ($request->hasFile('thumbnail')) {
+            $data['thumbnail'] = $request->file('thumbnail')->store('packages', 'public');
         }
 
         Package::create($data);
@@ -52,15 +52,15 @@ class PackageController extends Controller
             'category'    => 'required|string',
             'price'       => 'required|numeric|min:0',
             'description' => 'nullable|string',
-            'image'       => 'nullable|image|max:2048',
+            'thumbnail'   => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->except('image');
+        $data = $request->except('thumbnail');
         $data['is_active'] = $request->boolean('is_active');
 
-        if ($request->hasFile('image')) {
-            if ($package->image) Storage::disk('public')->delete($package->image);
-            $data['image'] = $request->file('image')->store('packages', 'public');
+        if ($request->hasFile('thumbnail')) {
+            if ($package->thumbnail) Storage::disk('public')->delete($package->thumbnail);
+            $data['thumbnail'] = $request->file('thumbnail')->store('packages', 'public');
         }
 
         $package->update($data);
@@ -69,7 +69,7 @@ class PackageController extends Controller
 
     public function destroy(Package $package)
     {
-        if ($package->image) Storage::disk('public')->delete($package->image);
+        if ($package->thumbnail) Storage::disk('public')->delete($package->thumbnail);
         $package->delete();
         return back()->with('success', 'Paket berhasil dihapus.');
     }

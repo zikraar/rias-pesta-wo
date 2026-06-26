@@ -17,7 +17,7 @@ class ProgressController extends Controller
 
     public function store(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'booking_id'  => 'required|exists:bookings,id',
             'title'       => 'required|string|max:255',
             'description' => 'nullable|string',
@@ -25,23 +25,29 @@ class ProgressController extends Controller
             'order'       => 'required|integer|min:1',
         ]);
 
-        Progress::create($request->all());
+        Progress::create($validated);
         return back()->with('success', 'Progress berhasil ditambahkan.');
     }
 
     public function update(Request $request, Progress $progress)
     {
+        if (in_array($progress->booking->status, ['completed', 'cancelled'])) {
+            return back()->with('error', 'Booking sudah final, progress tidak bisa diubah lagi.');
+        }
+
         $request->validate([
             'status'         => 'required|in:pending,on_progress,done',
             'description'    => 'nullable|string',
             'completed_date' => 'nullable|date',
-            'attachment'     => 'nullable|image|max:2048',
+            'attachment'     => 'nullable|image|mimes:jpg,jpeg,png|max:2048',
         ]);
 
-        $data = $request->only('status', 'description', 'completed_date');
+        $data = $request->only('status', 'description');
 
-        if ($request->status === 'done' && !$progress->completed_date) {
-            $data['completed_date'] = now()->toDateString();
+        if ($request->status === 'done') {
+            $data['completed_date'] = $progress->completed_date ?: now()->toDateString();
+        } else {
+            $data['completed_date'] = null;
         }
 
         if ($request->hasFile('attachment')) {

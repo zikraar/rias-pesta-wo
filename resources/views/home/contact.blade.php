@@ -28,7 +28,7 @@
                     </div>
                     <h3 class="font-bold text-gray-800 mb-2">Alamat</h3>
                     <p class="text-gray-600 text-sm leading-relaxed">
-                        Jl. Delima Gg Delima VII No. 3<br>Pekanbaru, Riau
+                        Jl. Delima Gg Delima VII No. 3<br>Pekanbaru, Riau 28294
                     </p>
                 </div>
 
@@ -37,14 +37,9 @@
                         <i class="fab fa-whatsapp text-green-500 text-xl"></i>
                     </div>
                     <h3 class="font-bold text-gray-800 mb-2">WhatsApp</h3>
-                    <a href="https://wa.me/628127603567" target="_blank"
+                    <a href="https://wa.me/6281276031567" target="_blank"
                        class="text-green-600 hover:text-green-700 font-medium text-sm">
-                        0812-7603-567
-                    </a>
-                    <br>
-                    <a href="https://wa.me/628782249624" target="_blank"
-                       class="text-green-600 hover:text-green-700 font-medium text-sm">
-                        0878-2249-6243
+                        0812-7603-1567
                     </a>
                 </div>
 
@@ -65,8 +60,7 @@
                     </div>
                     <h3 class="font-bold text-gray-800 mb-2">Jam Operasional</h3>
                     <div class="text-sm text-gray-600 space-y-1">
-                        <p><span class="font-medium">Senin – Sabtu:</span> 08.00 – 20.00 WIB</p>
-                        <p><span class="font-medium">Minggu:</span> 09.00 – 17.00 WIB</p>
+                        <p><span class="font-medium">Setiap hari:</span> 07.00 – 21.00 WIB</p>
                     </div>
                 </div>
             </div>
@@ -136,10 +130,16 @@
         {{-- Map --}}
         <div class="mt-8 bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
             <iframe
-                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3989.6785!2d101.4478!3d0.5085!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x0%3A0x0!2zMCozMCczMC42Ik4gMTAxwrAyNicxMi4xIkU!5e0!3m2!1sid!2sid!4v1234567890"
+                src="https://www.google.com/maps?q=Jl.+Delima+Gg+Delima+VII+No.3+Pekanbaru&output=embed"
                 width="100%" height="300" style="border:0;" allowfullscreen="" loading="lazy"
                 referrerpolicy="no-referrer-when-downgrade">
             </iframe>
+            <div class="p-4 text-center border-t border-gray-100">
+                <a href="https://maps.app.goo.gl/a2iJ7iebtDoVkkkK9" target="_blank"
+                   class="text-rose-600 hover:text-rose-700 font-medium text-sm">
+                    <i class="fas fa-location-arrow mr-1"></i>Buka di Google Maps
+                </a>
+            </div>
         </div>
     </div>
 </section>
@@ -162,7 +162,7 @@ function sendWhatsApp() {
 
     const msg = `Halo Rias Pesta Pekanbaru 👋\n\nSaya ingin konsultasi mengenai paket pernikahan.\n\n*Nama:* ${nama}\n*No. WA:* ${wa}\n*Tgl Pernikahan:* ${tanggal || '-'}\n*Paket:* ${paket || '-'}\n\n*Pesan:*\n${pesan || '-'}`;
 
-    window.open('https://wa.me/628127603567?text=' + encodeURIComponent(msg), '_blank');
+    window.open('https://wa.me/6281276031567?text=' + encodeURIComponent(msg), '_blank');
 }
 </script>
 @endpush
